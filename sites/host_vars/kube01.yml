@@ -1,0 +1,4 @@
+ansible_ssh_host: 192.168.122.x
+ansible_port: 22
+HOSTNAME_NAME: kube01
+FIREWALLD_DISABLED: true

@@ -1,0 +1,3 @@
+---
+# vars file for kubernetes_base
+KUBEADM_VERSION: "1.18.0"

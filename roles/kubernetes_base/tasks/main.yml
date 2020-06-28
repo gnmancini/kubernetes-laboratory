@@ -1,0 +1,82 @@
+---
+# tasks file for kubernetes_base
+- name: changing selinux configuration
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: Install docker
+  yum:
+    name: docker
+    state: present
+
+- name: updating parameter to start docker
+  replace:
+    dest: /etc/sysconfig/docker
+    regexp: '--selinux-enabled'
+    replace: '--selinux-enabled=false'
+    backup: yes
+
+- name: enable and start docker
+  systemd:
+    name: docker
+    enabled: yes
+    state: started
+
+- name: adding kubernetes repository
+  yum_repository:
+    name: kubernetes
+    description: kubernetes repository
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    gpgcheck: no
+
+- name: removing swap
+  command: swapoff -a
+
+- name: removing swap from fstab
+  lineinfile:
+    dest: /etc/fstab
+    regexp: '^\/root\/swap'
+    state: absent
+
+- name: Add gpg key
+  rpm_key:
+    key: https://packages.cloud.google.com/yum/doc/yum-key.gpg
+    state: present
+    validate_certs: yes
+
+- name: Add gpg key
+  rpm_key:
+    key: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    state: present
+    validate_certs: yes
+
+- name: install base kubernetes
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - kubeadm-{{ KUBEADM_VERSION }}
+    - kubelet-{{ KUBEADM_VERSION }}
+    - kubectl-{{ KUBEADM_VERSION }}
+
+- name: enable and start kubelet
+  systemd:
+    name: kubelet
+    enabled: yes
+    state: started
+
+- name: copy configuration file
+  copy:
+    src: etc/sysctl.d/k8s.conf
+    dest: /etc/sysctl.d/k8s.conf
+
+- name: daemon reload
+  shell: "sysctl --system"
+
+- name: stop firewalld
+  systemd:
+    name: firewalld
+    enabled: no
+    state: stopped
+

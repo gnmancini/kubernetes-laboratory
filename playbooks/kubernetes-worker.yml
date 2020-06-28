@@ -1,0 +1,25 @@
+---
+- hosts: kubemaster
+  tasks:
+    - name: get command
+      command: kubeadm token create --print-join-command
+      register: result
+      ignore_errors: True
+
+    - name: printing result
+      command: echo  {{ result.stdout }}
+
+#    - name: variable assignation
+#      set_fact:
+#        register_persist: "{{ result.stdout }}"
+#        cacheable: True
+
+- hosts: kubeworker
+  tasks:
+    - name: geting the command from the previous host
+      set_fact:
+        register_persistent: "{{ hostvars['kube01']['result'] }}"
+        cacheable: True
+
+    - name: executing kubeadm join
+      shell: "{{ register_persistent.stdout }}"

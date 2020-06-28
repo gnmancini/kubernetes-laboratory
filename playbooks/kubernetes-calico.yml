@@ -1,0 +1,5 @@
+---
+- hosts: kubemaster
+  tasks:
+    - name: installing calico
+      shell: "kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml"

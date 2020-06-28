@@ -1,0 +1,5 @@
+---
+
+- hosts: kubemaster
+  roles:
+    - kubernetes_master

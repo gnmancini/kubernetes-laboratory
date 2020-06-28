@@ -1,0 +1,26 @@
+---
+# tasks file for kubemaster
+- name: installing kubemaster
+  command: "kubeadm init --pod-network-cidr=10.244.0.0/16"
+
+- name: Creates directory
+  file:
+    path: $HOME/.kube
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+
+- name: copy configuration directory
+  copy:
+    remote_src: yes
+    src: /etc/kubernetes/admin.conf
+    dest: $HOME/.kube/config
+
+
+- name: copy configuration directory
+  copy:
+    remote_src: yes
+    src: /etc/kubernetes/admin.conf
+    dest: $HOME/.kube/config
+

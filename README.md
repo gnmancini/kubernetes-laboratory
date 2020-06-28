@@ -14,7 +14,11 @@ These are a few playbooks to install a kubernetes cluster without HA to practice
    hostnamectl set-hostname kube01.test.lan
 
 3. Update the ip for each host in 
-   sites/inventory
+   sites/hosts_vars/kube01.yml 
+   sites/hosts_vars/kube02.yml
+   sites/hosts_vars/kube03.yml
+   sites/hosts_vars/kube04.yml
+   sites/hosts_vars/kube05.yml
 
 4. Add the public key on each kvm host
    ssh-copy-id -i ~/.ssh/mykey root@kube01.test.lan
@@ -26,7 +30,6 @@ These are a few playbooks to install a kubernetes cluster without HA to practice
 Step by step:
 Installing the base of kubelet,etc.
    ansible-playbook playbooks/kubernetes-base.yml -i sites/inventory --diff
-
 
 Installing the kubernetes master.
    ansible-playbook playbook/kubernetes-master.yml -i sites/inventory --diff
